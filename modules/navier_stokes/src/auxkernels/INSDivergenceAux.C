@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //* This file is part of the MOOSE framework
 //* https://www.mooseframework.org
 //*
@@ -18,6 +19,15 @@ INSDivergenceAux::validParams()
   InputParameters params = AuxKernel::validParams();
 
   params.addClassDescription("Computes h_min / |u|.");
+=======
+#include "INSDivergenceAux.h"
+
+template<>
+InputParameters validParams<INSDivergenceAux>()
+{
+  InputParameters params = validParams<AuxKernel>();
+
+>>>>>>> Merging Modules into MOOSE #2460
   // Coupled variables
   params.addRequiredCoupledVar("u", "x-velocity");
   params.addCoupledVar("v", "y-velocity"); // only required in 2D and 3D
@@ -26,6 +36,7 @@ INSDivergenceAux::validParams()
   return params;
 }
 
+<<<<<<< HEAD
 INSDivergenceAux::INSDivergenceAux(const InputParameters & parameters)
   : AuxKernel(parameters),
     _grad_u_vel(coupledGradient("u")),
@@ -33,6 +44,14 @@ INSDivergenceAux::INSDivergenceAux(const InputParameters & parameters)
     _grad_w_vel(_mesh.dimension() == 3 ? coupledGradient("w") : _grad_zero)
 {
 }
+=======
+INSDivergenceAux::INSDivergenceAux(const std::string & name, InputParameters parameters)
+  :AuxKernel(name, parameters),
+  _grad_u_vel(coupledGradient("u")),
+  _grad_v_vel(_mesh.dimension() >= 2 ? coupledGradient("v") : _grad_zero),
+  _grad_w_vel(_mesh.dimension() == 3 ? coupledGradient("w") : _grad_zero)
+{}
+>>>>>>> Merging Modules into MOOSE #2460
 
 Real
 INSDivergenceAux::computeValue()

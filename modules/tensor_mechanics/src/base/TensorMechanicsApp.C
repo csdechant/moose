@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //* This file is part of the MOOSE framework
 //* https://www.mooseframework.org
 //*
@@ -80,6 +81,48 @@ TensorMechanicsApp::registerAll(Factory & f, ActionFactory & af, Syntax & s)
   Registry::registerObjectsTo(f, {"TensorMechanicsApp"});
   Registry::registerActionsTo(af, {"TensorMechanicsApp"});
   associateSyntaxInner(s, af);
+=======
+#include "TensorMechanicsApp.h"
+#include "Moose.h"
+#include "AppFactory.h"
+
+#include "TensorMechanicsAction.h"
+#include "StressDivergenceTensors.h"
+#include "LinearElasticMaterial.h"
+#include "FiniteStrainElasticMaterial.h"
+#include "FiniteStrainPlasticMaterial.h"
+#include "FiniteStrainRatePlasticMaterial.h"
+#include "FiniteStrainCrystalPlasticity.h"
+#include "RankTwoAux.h"
+#include "RealTensorValueAux.h"
+#include "RankFourAux.h"
+#include "TensorElasticEnergyAux.h"
+#include "FiniteStrainPlasticAux.h"
+#include "CrystalPlasticitySlipSysAux.h"
+#include "CrystalPlasticityRotationOutAux.h"
+
+template<>
+InputParameters validParams<TensorMechanicsApp>()
+{
+  InputParameters params = validParams<MooseApp>();
+  return params;
+}
+
+TensorMechanicsApp::TensorMechanicsApp(const std::string & name, InputParameters parameters) :
+    MooseApp(name, parameters)
+{
+  srand(libMesh::processor_id());
+
+  Moose::registerObjects(_factory);
+  TensorMechanicsApp::registerObjects(_factory);
+
+  Moose::associateSyntax(_syntax, _action_factory);
+  TensorMechanicsApp::associateSyntax(_syntax, _action_factory);
+}
+
+TensorMechanicsApp::~TensorMechanicsApp()
+{
+>>>>>>> Merging Modules into MOOSE #2460
 }
 
 void
@@ -91,13 +134,32 @@ TensorMechanicsApp::registerApps()
 void
 TensorMechanicsApp::registerObjects(Factory & factory)
 {
+<<<<<<< HEAD
   mooseDeprecated("use registerAll instead of registerObjects");
   Registry::registerObjectsTo(factory, {"TensorMechanicsApp"});
+=======
+  registerKernel(StressDivergenceTensors);
+
+  registerMaterial(LinearElasticMaterial);
+  registerMaterial(FiniteStrainElasticMaterial);
+  registerMaterial(FiniteStrainPlasticMaterial);
+  registerMaterial(FiniteStrainRatePlasticMaterial);
+  registerMaterial(FiniteStrainCrystalPlasticity);
+
+  registerAux(RankTwoAux);
+  registerAux(RealTensorValueAux);
+  registerAux(RankFourAux);
+  registerAux(TensorElasticEnergyAux);
+  registerAux(FiniteStrainPlasticAux);
+  registerAux(CrystalPlasticitySlipSysAux);
+  registerAux(CrystalPlasticityRotationOutAux);
+>>>>>>> Merging Modules into MOOSE #2460
 }
 
 void
 TensorMechanicsApp::associateSyntax(Syntax & syntax, ActionFactory & action_factory)
 {
+<<<<<<< HEAD
   mooseDeprecated("use registerAll instead of associateSyntax");
   Registry::registerActionsTo(action_factory, {"TensorMechanicsApp"});
   associateSyntaxInner(syntax, action_factory);
@@ -118,4 +180,9 @@ extern "C" void
 TensorMechanicsApp_registerApps()
 {
   TensorMechanicsApp::registerApps();
+=======
+  syntax.registerActionSyntax("TensorMechanicsAction", "TensorMechanics/*");
+
+  registerAction(TensorMechanicsAction, "add_kernel");
+>>>>>>> Merging Modules into MOOSE #2460
 }

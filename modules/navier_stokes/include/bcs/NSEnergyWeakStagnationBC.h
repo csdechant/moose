@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //* This file is part of the MOOSE framework
 //* https://www.mooseframework.org
 //*
@@ -12,19 +13,47 @@
 #include "NSWeakStagnationBaseBC.h"
 
 // Forward Declarations
+=======
+#ifndef NSENERGYWEAKSTAGNATIONBC_H
+#define NSENERGYWEAKSTAGNATIONBC_H
+
+#include "NSWeakStagnationBC.h"
+
+// Forward Declarations
+class NSEnergyWeakStagnationBC;
+
+template<>
+InputParameters validParams<NSEnergyWeakStagnationBC>();
+
+>>>>>>> Merging Modules into MOOSE #2460
 
 /**
  * The inviscid energy BC term with specified normal flow.
  */
+<<<<<<< HEAD
 class NSEnergyWeakStagnationBC : public NSWeakStagnationBaseBC
 {
 public:
   static InputParameters validParams();
 
   NSEnergyWeakStagnationBC(const InputParameters & parameters);
+=======
+class NSEnergyWeakStagnationBC : public NSWeakStagnationBC
+{
+
+public:
+  NSEnergyWeakStagnationBC(const std::string & name, InputParameters parameters);
+
+  virtual ~NSEnergyWeakStagnationBC(){}
+>>>>>>> Merging Modules into MOOSE #2460
 
 protected:
   virtual Real computeQpResidual();
   virtual Real computeQpJacobian();
   virtual Real computeQpOffDiagJacobian(unsigned jvar);
 };
+<<<<<<< HEAD
+=======
+
+#endif // NSENERGYWEAKSTAGNATIONBC_H
+>>>>>>> Merging Modules into MOOSE #2460

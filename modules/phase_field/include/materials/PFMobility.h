@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 //* This file is part of the MOOSE framework
 //* https://www.mooseframework.org
 //*
@@ -12,22 +13,51 @@
 #include "Material.h"
 
 // Forward Declarations
+=======
+#ifndef PFMobility_H
+#define PFMobility_H
+
+#include "Material.h"
+
+//Forward Declarations
+class PFMobility;
+
+template<>
+InputParameters validParams<PFMobility>();
+>>>>>>> Merging Modules into MOOSE #2460
 
 class PFMobility : public Material
 {
 public:
+<<<<<<< HEAD
   static InputParameters validParams();
 
   PFMobility(const InputParameters & parameters);
+=======
+  PFMobility(const std::string & name,
+          InputParameters parameters);
+>>>>>>> Merging Modules into MOOSE #2460
 
 protected:
   virtual void computeProperties();
 
 private:
+<<<<<<< HEAD
+=======
+
+>>>>>>> Merging Modules into MOOSE #2460
   MaterialProperty<Real> & _M;
   MaterialProperty<RealGradient> & _grad_M;
   MaterialProperty<Real> & _kappa_c;
 
   Real _mob;
   Real _kappa;
+<<<<<<< HEAD
 };
+=======
+
+
+};
+
+#endif //PFMobility_H
+>>>>>>> Merging Modules into MOOSE #2460
