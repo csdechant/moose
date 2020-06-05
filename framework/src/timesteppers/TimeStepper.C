@@ -53,6 +53,7 @@ TimeStepper::TimeStepper(const InputParameters & parameters)
     _cutback_factor_at_failure(getParam<Real>("cutback_factor_at_failure")),
     _reset_dt(getParam<bool>("reset_dt")),
     _has_reset_dt(false),
+    _at_sync_point(declareRecoverableData<bool>("at_sync_point", false)),
     _current_dt(declareRestartableData("current_dt", 1.0))
 {
 }
@@ -154,6 +155,8 @@ TimeStepper::constrainStep(Real & dt)
     _console << diag.str();
   }
 
+  _at_sync_point = at_sync_point;
+  
   return at_sync_point;
 }
 

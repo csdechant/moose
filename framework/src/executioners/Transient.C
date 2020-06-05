@@ -136,6 +136,17 @@ Transient::Transient(const InputParameters & parameters)
     _t_step(_problem.timeStep()),
     _time(_problem.time()),
     _time_old(_problem.timeOld()),
+
+    /**
+     * Adding older times needed for variable order/variable step BDF/
+     * For additional comments, see FEProblemBase.
+     */
+    _time_older(_problem.timeOlder()),
+    _time_old3(_problem.timeOld3()),
+    _time_old4(_problem.timeOld4()),
+    _time_old5(_problem.timeOld5()),
+    _time_old6(_problem.timeOld6()),
+
     _dt(_problem.dt()),
     _dt_old(_problem.dtOld()),
     _unconstrained_dt(declareRecoverableData<Real>("unconstrained_dt", -1)),
@@ -354,6 +365,12 @@ Transient::incrementStepOrReject()
       if (_t_step != 0)
         _problem.adaptMesh();
 #endif
+
+      _time_old6 = _time_old5;
+      _time_old5 = _time_old4;
+      _time_old4 = _time_old3;
+      _time_old3 = _time_older;
+      _time_older = _time_old;
 
       _time_old = _time;
       _t_step++;

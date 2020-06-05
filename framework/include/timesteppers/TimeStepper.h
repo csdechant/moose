@@ -149,6 +149,9 @@ protected:
   /// True if dt has been reset
   bool _has_reset_dt;
 
+  ///Check point to see if a sync point currently active
+  bool & _at_sync_point;
+
 private:
   /// Size of the current time step as computed by the Stepper.  Note that the actual dt that was taken might be smaller if the Executioner constrained it.
   Real & _current_dt;

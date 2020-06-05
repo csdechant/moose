@@ -208,6 +208,17 @@ protected:
   Real & _time;
   /// Previous time
   Real & _time_old;
+
+  /**
+   * Adding older times needed for variable order/variable step BDF/
+   * For additional comments, see FEProblemBase.
+   */
+  Real & _time_older;
+  Real & _time_old3;
+  Real & _time_old4;
+  Real & _time_old5;
+  Real & _time_old6;
+
   /// Current delta t... or timestep size.
   Real & _dt;
   Real & _dt_old;

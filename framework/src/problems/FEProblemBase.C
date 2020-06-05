@@ -219,6 +219,25 @@ FEProblemBase::FEProblemBase(const InputParameters & parameters)
     _transient(false),
     _time(declareRestartableData<Real>("time")),
     _time_old(declareRestartableData<Real>("time_old")),
+
+    /**
+     * Adding older times needed for variable order/variable step BDF.
+     * Might have the times stored somewhere else later but using
+     * FEProblemBase is easiest for now since the Time Integrator,
+     * Time Stepper and Predictor will need the older times.
+     */
+    _time_older(declareRestartableData<Real>("time_older")),
+    _time_old3(declareRestartableData<Real>("time_old3")),
+    _time_old4(declareRestartableData<Real>("time_old4")),
+    _time_old5(declareRestartableData<Real>("time_old5")),
+    _time_old6(declareRestartableData<Real>("time_old6")),
+
+    /**
+     * Adding order variable for variable order/variable step BDF.
+     * Some comment about storage in regard to the older times.
+     */
+    _k_order(declareRestartableData<int>("k_order")),
+
     _t_step(declareRecoverableData<int>("t_step")),
     _dt(declareRestartableData<Real>("dt")),
     _dt_old(declareRestartableData<Real>("dt_old")),
@@ -347,6 +366,21 @@ FEProblemBase::FEProblemBase(const InputParameters & parameters)
 
   _time = 0.0;
   _time_old = 0.0;
+
+  /**Adding older times needed for variable order/variable step BDF/
+   * See comments in the parameters section.
+   */
+  _time_older = 0.0;
+  _time_old3 = 0.0;
+  _time_old4 = 0.0;
+  _time_old5 = 0.0;
+  _time_old6 = 0.0;
+
+  /**Adding order variable for variable order/variable step BDF.
+   * See comments in the parameters section.
+   */
+  _k_order = 0;
+
   _t_step = 0;
   _dt = 0;
   _dt_old = _dt;

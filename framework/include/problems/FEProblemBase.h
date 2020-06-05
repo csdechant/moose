@@ -440,6 +440,25 @@ public:
 
   virtual Real & time() const { return _time; }
   virtual Real & timeOld() const { return _time_old; }
+
+  /**
+   * Adding older times needed for variable order/variable step BDF.
+   * Might have the times stored somewhere else later but using
+   * FEProblemBase is easiest for now since the Time Integrator,
+   * Time Stepper and Predictor will need the older times.
+   */
+  virtual Real & timeOlder() const { return _time_older; }
+  virtual Real & timeOld3() const { return _time_old3; }
+  virtual Real & timeOld4() const { return _time_old4; }
+  virtual Real & timeOld5() const { return _time_old5; }
+  virtual Real & timeOld6() const { return _time_old6; }
+
+  /**
+   * Adding order variable for variable order/variable step BDF.
+   * Some comment about storage in regard to the older times.
+   */
+  virtual int & kOrder() const { return _k_order; }
+
   virtual int & timeStep() const { return _t_step; }
   virtual Real & dt() const { return _dt; }
   virtual Real & dtOld() const { return _dt_old; }
@@ -1871,6 +1890,17 @@ protected:
   bool _transient;
   Real & _time;
   Real & _time_old;
+
+  //Adding older times needed for variable order/variable step BDF
+  Real & _time_older;
+  Real & _time_old3;
+  Real & _time_old4;
+  Real & _time_old5;
+  Real & _time_old6;
+
+  //Adding order variable for variable order/variable step BDF
+  int & _k_order;
+
   int & _t_step;
   Real & _dt;
   Real & _dt_old;
