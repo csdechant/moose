@@ -424,7 +424,9 @@ SystemBase::reinitElem(const Elem * /*elem*/, THREAD_ID tid)
   {
     const std::vector<MooseVariableFieldBase *> & vars = _vars[tid].fieldVariables();
     for (const auto & var : vars)
+    {
       var->computeElemValues();
+    }
   }
 }
 

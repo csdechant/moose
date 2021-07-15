@@ -271,10 +271,19 @@ public:
   {
     return _element_data->adSln();
   }
+  const ADTemplateVariableValue<OutputType> & adSlnAvg() const override
+  {
+    mooseError("There is no element averaging for FV variables.");
+  }
   const ADTemplateVariableGradient<OutputType> & adGradSln() const override
   {
     return _element_data->adGradSln();
   }
+  const ADTemplateVariableGradient<OutputType> & adGradSlnAvg() const override
+  {
+    mooseError("There is no element averaging for FV variables.");
+  }
+
 
   /**
    * Retrieve (or potentially compute) the gradient on the provided element. Overriders of this
@@ -327,9 +336,17 @@ public:
   {
     return _neighbor_data->adSln();
   }
+  const ADTemplateVariableValue<OutputType> & adSlnAvgNeighbor() const override
+  {
+    mooseError("There is no element averaging for FV variables.");
+  }
   const ADTemplateVariableGradient<OutputType> & adGradSlnNeighbor() const override
   {
     return _neighbor_data->adGradSln();
+  }
+  const ADTemplateVariableGradient<OutputType> & adGradSlnAvgNeighbor() const override
+  {
+    mooseError("There is no element averaging for FV variables.");
   }
   const ADTemplateVariableSecond<OutputType> & adSecondSlnNeighbor() const override
   {
@@ -346,6 +363,7 @@ public:
   /// data structure changes in order for objects that bind to sln, adSln,
   /// uDot, etc. to be updated/correct.
   virtual void computeElemValues() override;
+
   /// Initializes/computes variable values from the solution vectors for the
   /// face represented by fi.  This includes initializing data for elements on
   /// both sides of the face (elem and neighbor) and handles the case where

@@ -408,6 +408,34 @@ MooseVariableFE<OutputType>::computeElemValuesFace()
   _element_data->setGeometry(Moose::Face);
   _element_data->computeValues();
 }
+//This is probably wrong
+template <typename OutputType>
+void
+MooseVariableFE<OutputType>::computeFaceValues(const FaceInfo & fi)
+{
+  _element_data->setGeometry(Moose::Face);
+  _neighbor_data->setGeometry(Moose::Face);
+
+  auto facetype = fi.faceType(_var_name);
+  if (facetype == FaceInfo::VarFaceNeighbors::NEITHER)
+    return;
+  else if (facetype == FaceInfo::VarFaceNeighbors::BOTH)
+  {
+    _element_data->computeValuesFace(fi);
+    _neighbor_data->computeValuesFace(fi);
+  }
+  else if (facetype == FaceInfo::VarFaceNeighbors::ELEM)
+  {
+    _element_data->computeValuesFace(fi);
+  }
+  else if (facetype == FaceInfo::VarFaceNeighbors::NEIGHBOR)
+  {
+    _neighbor_data->computeValuesFace(fi);
+  }
+  else
+    mooseError("robert wrote broken MooseVariableFV code");
+
+}
 
 template <typename OutputType>
 void
