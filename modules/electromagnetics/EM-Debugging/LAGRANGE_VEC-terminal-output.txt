@@ -1,0 +1,109 @@
+(moose) corey@cdechant-ThinkPad-P51:~/Desktop/projects-EM-Debugging/moose/modules/electromagnetics$ gdb --args ./electromagnetics-dbg -i EM-Debugging/microwave-source-LAGRANGE_VEC-debug.i
+GNU gdb (Ubuntu 9.2-0ubuntu1~20.04.1) 9.2
+Copyright (C) 2020 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+Type "show copying" and "show warranty" for details.
+This GDB was configured as "x86_64-linux-gnu".
+Type "show configuration" for configuration details.
+For bug reporting instructions, please see:
+<http://www.gnu.org/software/gdb/bugs/>.
+Find the GDB manual and other documentation resources online at:
+    <http://www.gnu.org/software/gdb/documentation/>.
+
+For help, type "help".
+Type "apropos word" to search for commands related to "word"...
+Reading symbols from ./electromagnetics-dbg...
+(gdb) b MPI_Abort
+Function "MPI_Abort" not defined.
+Make breakpoint pending on future shared library load? (y or [n]) y
+Breakpoint 1 (MPI_Abort) pending.
+(gdb) r
+Starting program: /home/corey/Desktop/projects-EM-Debugging/moose/modules/electromagnetics/electromagnetics-dbg -i EM-Debugging/microwave-source-LAGRANGE_VEC-debug.i
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+[New Thread 0x7fffe9c0a700 (LWP 190633)]
+Setting Up
+  Initializing
+    Initializing Equation Systems..                                                      [ 16.36 s] [  268 MB]
+  Finished Initializing                                                                  [ 16.97 s] [  268 MB]
+Finished Setting Up                                                                      [ 20.62 s] [  268 MB]
+Framework Information:
+MOOSE Version:           git commit 396c3f6a61 on 2023-05-01
+LibMesh Version:         
+PETSc Version:           3.16.6
+SLEPc Version:           3.16.2
+Current Time:            Wed May  3 14:21:37 2023
+Executable Timestamp:    Wed May  3 14:10:17 2023
+
+Parallelism:
+  Num Processors:          1
+  Num Threads:             1
+
+Mesh: 
+  Parallel Type:           replicated
+  Mesh Dimension:          2
+  Spatial Dimension:       2
+  Nodes:                   117125
+  Elems:                   58166
+  Num Subdomains:          3
+
+Nonlinear System:
+  Num DOFs:                117920
+  Num Local DOFs:          117920
+  Variables:               { "E_real" "E_imag" } 
+  Finite Element Types:    "LAGRANGE_VEC" 
+  Approximation Orders:    "FIRST" 
+
+Execution Information:
+  Executioner:             Steady
+  Solver Mode:             NEWTON
+  MOOSE Preconditioner:    SMP
+
+libMesh terminating:
+
+Stack frames: 16
+0: libMesh::print_trace(std::ostream&)
+1: libMesh::MacroFunctions::report_error(char const*, int, char const*, char const*, std::ostream&)
+2: /home/corey/Desktop/projects-EM-Debugging/moose/framework/libmoose-dbg.so.0(+0x221c2a2) [0x7ffff6c672a2]
+3: Assembly::reinitFE(libMesh::Elem const*)
+4: Assembly::reinit(libMesh::Elem const*)
+5: FEProblemBase::prepare(libMesh::Elem const*, unsigned int)
+6: ComputeInitialConditionThread::operator()(libMesh::StoredRange<libMesh::MeshBase::const_element_iterator, libMesh::Elem const*> const&)
+7: /home/corey/Desktop/projects-EM-Debugging/moose/framework/libmoose-dbg.so.0(+0x151a14d) [0x7ffff5f6514d]
+8: FEProblemBase::projectSolution()
+9: FEProblemBase::initialSetup()
+10: Steady::init()
+11: MooseApp::executeExecutioner()
+12: MooseApp::run()
+13: main
+14: __libc_start_main
+15: /home/corey/Desktop/projects-EM-Debugging/moose/modules/electromagnetics/electromagnetics-dbg(+0x3079) [0x555555557079]
+[0] /home/corey/mambaforge3/envs/moose/libmesh/include/libmesh/fe_base.h, line 253, compiled May  3 2023 at 14:06:07
+
+
+Thread 1 "electromagnetic" hit Breakpoint 1, 0x00007fffeba7a820 in PMPI_Abort () from /home/corey/mambaforge3/envs/moose/lib/libmpi.so.12
+(gdb) bt
+#0  0x00007fffeba7a820 in PMPI_Abort () from /home/corey/mambaforge3/envs/moose/lib/libmpi.so.12
+#1  0x00007ffff2e64c2b in libMesh::libmesh_terminate_handler() () from /home/corey/mambaforge3/envs/moose/libmesh/lib/libmesh_dbg.so.0
+#2  0x00007fffebe9c514 in __cxxabiv1::__terminate (handler=<optimized out>) at ../../../../libstdc++-v3/libsupc++/eh_terminate.cc:48
+#3  0x00007fffebe9c566 in std::terminate () at ../../../../libstdc++-v3/libsupc++/eh_terminate.cc:58
+#4  0x00007fffebe9c758 in __cxxabiv1::__cxa_throw (obj=0x5555592d2b90, tinfo=0x7ffff7fc6ae0 <typeinfo for libMesh::LogicError>, dest=0x7ffff5537f04 <libMesh::LogicError::~LogicError()>)
+    at ../../../../libstdc++-v3/libsupc++/eh_throw.cc:98
+#5  0x00007ffff6c6730c in libMesh::FEGenericBase<libMesh::VectorValue<double> >::get_curl_phi (this=0x5555585dab80) at /home/corey/mambaforge3/envs/moose/libmesh/include/libmesh/fe_base.h:253
+#6  0x00007ffff6c4492c in Assembly::reinitFE (this=0x5555585b0500, elem=0x555555a3c920) at /home/corey/Desktop/projects-EM-Debugging/moose/framework/src/base/Assembly.C:732
+#7  0x00007ffff6c4ea74 in Assembly::reinit (this=0x5555585b0500, elem=0x555555a3c920) at /home/corey/Desktop/projects-EM-Debugging/moose/framework/src/base/Assembly.C:1713
+#8  0x00007ffff5efe31d in FEProblemBase::prepare (this=0x555558014fd0, elem=0x555555a3c920, tid=0) at /home/corey/Desktop/projects-EM-Debugging/moose/framework/src/problems/FEProblemBase.C:1473
+#9  0x00007ffff680ca67 in ComputeInitialConditionThread::operator() (this=0x7fffffffa7c0, range=...)
+    at /home/corey/Desktop/projects-EM-Debugging/moose/framework/src/loops/ComputeInitialConditionThread.C:75
+#10 0x00007ffff5f6514d in libMesh::Threads::parallel_reduce<libMesh::StoredRange<libMesh::MeshBase::const_element_iterator, libMesh::Elem const*>, ComputeInitialConditionThread> (range=..., body=...)
+    at /home/corey/mambaforge3/envs/moose/libmesh/include/libmesh/threads_pthread.h:380
+#11 0x00007ffff5f0dcab in FEProblemBase::projectSolution (this=0x555558014fd0) at /home/corey/Desktop/projects-EM-Debugging/moose/framework/src/problems/FEProblemBase.C:3124
+#12 0x00007ffff5ef76d5 in FEProblemBase::initialSetup (this=0x555558014fd0) at /home/corey/Desktop/projects-EM-Debugging/moose/framework/src/problems/FEProblemBase.C:905
+#13 0x00007ffff64a981f in Steady::init (this=0x5555585ceb50) at /home/corey/Desktop/projects-EM-Debugging/moose/framework/src/executioners/Steady.C:49
+#14 0x00007ffff6cb4562 in MooseApp::executeExecutioner (this=0x5555556e7500) at /home/corey/Desktop/projects-EM-Debugging/moose/framework/src/base/MooseApp.C:1124
+#15 0x00007ffff6cb75d6 in MooseApp::run (this=0x5555556e7500) at /home/corey/Desktop/projects-EM-Debugging/moose/framework/src/base/MooseApp.C:1425
+#16 0x00005555555576a9 in main (argc=3, argv=0x7fffffffb728) at /home/corey/Desktop/projects-EM-Debugging/moose/modules/electromagnetics/src/main.C:34
+(gdb) 
+

@@ -1,0 +1,114 @@
+(moose) corey@cdechant-ThinkPad-P51:~/Desktop/projects-EM-Debugging/moose/modules/electromagnetics/EM-Debugging$ ../electromagnetics-opt -i microwave-source-parallelization-debug.i
+                                                                               [  1.06 s] [  178 MB]
+Framework Information:
+MOOSE Version:           git commit 396c3f6a61 on 2023-05-01
+LibMesh Version:         
+PETSc Version:           3.16.6
+SLEPc Version:           3.16.2
+Current Time:            Wed May  3 14:18:26 2023
+Executable Timestamp:    Wed May  3 13:59:57 2023
+
+Parallelism:
+  Num Processors:          1
+  Num Threads:             1
+
+Mesh: 
+  Parallel Type:           replicated
+  Mesh Dimension:          2
+  Spatial Dimension:       2
+  Nodes:                   117125
+  Elems:                   58166
+  Num Subdomains:          3
+
+Nonlinear System:
+  Num DOFs:                175290
+  Num Local DOFs:          175290
+  Variables:               { "E_real" "E_imag" } 
+  Finite Element Types:    "NEDELEC_ONE" 
+  Approximation Orders:    "FIRST" 
+
+Execution Information:
+  Executioner:             Steady
+  Solver Mode:             NEWTON
+  MOOSE Preconditioner:    SMP
+
+
+Performing automatic scaling calculation
+
+ 0 Nonlinear |R| = 1.841135e-02
+    |residual|_2 of individual variables:
+                     E_real: 0
+                     E_imag: 0.0184113
+      0 Linear |R| = 1.841135e-02
+      1 Linear |R| = 4.237905e-08
+ 1 Nonlinear |R| = 4.237905e-08
+    |residual|_2 of individual variables:
+                     E_real: 3.33322e-08
+                     E_imag: 2.61716e-08
+      0 Linear |R| = 4.237905e-08
+      1 Linear |R| = 6.651294e-13
+      2 Linear |R| = 4.276658e-16
+ 2 Nonlinear |R| = 8.265572e-16
+    |residual|_2 of individual variables:
+                     E_real: 3.89804e-16
+                     E_imag: 7.28869e-16
+ Solve Converged!
+Currently Executing
+  Finished Solving                                                                       [  8.60 s] [  238 MB]
+Finished Executing                                                                       [ 10.61 s] [  245 MB]
+(moose) corey@cdechant-ThinkPad-P51:~/Desktop/projects-EM-Debugging/moose/modules/electromagnetics/EM-Debugging$ mpiexec -n 2 ../electromagnetics-opt -i microwave-source-parallelization-debug.i
+Framework Information:
+MOOSE Version:           git commit 396c3f6a61 on 2023-05-01
+LibMesh Version:         
+PETSc Version:           3.16.6
+SLEPc Version:           3.16.2
+Current Time:            Wed May  3 14:18:47 2023
+Executable Timestamp:    Wed May  3 13:59:57 2023
+
+Parallelism:
+  Num Processors:          2
+  Num Threads:             1
+
+Mesh: 
+  Parallel Type:           replicated
+  Mesh Dimension:          2
+  Spatial Dimension:       2
+  Nodes:                   
+    Total:                 117125
+    Local:                 58654
+    Min/Max/Avg:           58471/58654/58562
+  Elems:                   
+    Total:                 58166
+    Local:                 29083
+    Min/Max/Avg:           29083/29083/29083
+  Num Subdomains:          3
+  Num Partitions:          2
+  Partitioner:             metis
+
+Nonlinear System:
+  Num DOFs:                175290
+  Num Local DOFs:          87736
+  Variables:               { "E_real" "E_imag" } 
+  Finite Element Types:    "NEDELEC_ONE" 
+  Approximation Orders:    "FIRST" 
+
+Execution Information:
+  Executioner:             Steady
+  Solver Mode:             NEWTON
+  MOOSE Preconditioner:    SMP
+
+
+Performing automatic scaling calculation
+
+ 0 Nonlinear |R| = 1.841135e-02
+    |residual|_2 of individual variables:
+                     E_real: 0
+                     E_imag: 0.0184113
+      0 Linear |R| = 1.841135e-02
+  Linear solve did not converge due to DIVERGED_PC_FAILED iterations 0
+                 PC failed due to FACTOR_NUMERIC_ZEROPIVOT 
+Nonlinear solve did not converge due to DIVERGED_FNORM_NAN iterations 0
+ Solve Did NOT Converge!
+Aborting as solve did not converge
+Finished Executing                                                                       [  3.70 s] [  294 MB]
+(moose) corey@cdechant-ThinkPad-P51:~/Desktop/projects-EM-Debugging/moose/modules/electromagnetics/EM-Debugging$ 
