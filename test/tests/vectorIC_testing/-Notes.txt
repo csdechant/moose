@@ -1,0 +1,45 @@
+This directory contains input files to test restarting vector variables
+using the solution values from a previous Exodus file.
+
+The files 'transient_vector_diffusion.i' and 'transient_vector_diffusion_restart.i'
+uses a variable family of LAGRANGE_VEC, while files 'transient_function_curl.i' 
+and 'transient_function_curl_restart.i' uses a variable family of NEDELEC_ONE.
+
+A new ICs object was introduced, named 'VectorSolutionIC'. This object reads the
+vector components from the output file as scalars variable (e.g. if vector was named
+'u', the variable is saved as 'u_x', 'u_y', and 'u_z' in the Exodus file) using the 
+'SolutionUserObject' MOOSE object and combines the vector components as initial 
+conditions for the MOOSE vector variable.
+
+A bug was found that indicates that the vector values at the boundaries are not being
+read the 'SolutionUserObject' or stored correctly in the Exodus file. When letting 
+the 'pointValue' function in 'SolutionUserObject' be equal to a mesh block, an error 
+while occur, such as below:
+
+"The following error occurred in the UserObject 'soln' of type SolutionUserObject.
+Failed to access the data for variable 'u_x' at point (x,y,z)=(0,0,0) in the 'soln' SolutionUserObject"
+
+For that reason, 'VectorSolutionIC' reads the whole mesh and places values of the 
+vector where they exist. This is done with the 'pointValue' function in 
+'SolutionUserObject' while letting 'subdomain_ids = nullptr'
+
+It should be noted that is error only occurs when using a LAGRANGE_VEC variable, 
+but not when using a NEDELEC_ONE variable. At first, this was thought to be due to
+a difference in boundary conditions, but when changing both cases to uses a natural 
+boundary conditions, the input file with a LAGRANGE_VEC variable still failed, while 
+the input file with a NEDELEC_ONE variable had no error message.
+
+Along with the input files, CVS files were generated using Paraview to calculated the difference
+between the values from the previous Exodus file used for ICs and the actual ICs read by 
+the MOOSE object (the colume names are 'u_mag_diff', 'u_x_diff', and 'u_y_diff').
+
+For LAGRANGE_VEC, the absolute difference was low (< 6e-17) throught the whole mesh.
+
+For the NEDELEC_ONE, there was medium-to-high error at the corners of the mesh. This is true for
+both cases of boundary conditions (natural BC and curl BC). The errors were:
+Natural BC error: < 3e-4 at corners
+Curl BC error: < 1e-1 at corners
+
+Based on these cases, it seems there is an error when reading the vector variable data at 
+the boundaries (or at least at the corners of the mesh) from Exodus file using the MOOSE 
+'SolutionUserObject' object.

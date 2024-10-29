@@ -3,9 +3,10 @@
 
 # NOTE: The new ICs Object 'VectorSolutionIC' does NOT read individual blocks/Domains.
 #       There seems to be a bug where vector variables do not exist on points that are
-#       on the boundary of blocks. For that reason, 'VectorSolutionIC' reads the whole
-#       mesh and places values of the vector where they exist. This is done with the 
-#       'pointValue' function in 'SolutionUserObject' while letting 'subdomain_ids = nullptr'
+#       on the boundary of blocks (at least for LAGRANGE_VEC). For that reason, 
+#       'VectorSolutionIC' reads the whole mesh and places values of the vector where they exist. 
+#       This is done with the 'pointValue' function in 'SolutionUserObject' 
+#       while letting 'subdomain_ids = nullptr'
 
 [Mesh]
   [geo]
@@ -103,6 +104,7 @@
 
 [Executioner]
   type = Transient
+  start_time = 0.1
   num_steps = 10
   dt = 0.01
   solve_type = NEWTON

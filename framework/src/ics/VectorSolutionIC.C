@@ -26,8 +26,6 @@ VectorSolutionIC::validParams()
       "from_variable_x", "The name of the variable in the file that is to be extracted");
   params.addRequiredParam<VariableName>(
       "from_variable_y", "The name of the variable in the file that is to be extracted");
-  //params.addRequiredParam<std::string>(
-  //    "from_variable", "The name of the variable in the file that is to be extracted");
   params.addClassDescription(
       "Sets the initial condition from a field variable stored in an Exodus file, "
       "retrieved by a SolutionUserObject");
@@ -40,9 +38,6 @@ VectorSolutionIC::VectorSolutionIC(const InputParameters & parameters)
     //_solution_object_var_name(getParam<VariableName>("from_variable"))
     _solution_object_var_x_name(getParam<VariableName>("from_variable_x")),
     _solution_object_var_y_name(getParam<VariableName>("from_variable_y"))
-    // _solution_object_var_x_name(getParam<std::string>("from_variable") + "_x"),
-    // _solution_object_var_y_name(_sys.mesh().dimension() >= 2 ? getParam<std::string>("from_variable") + "_y" : "none"),
-    // _solution_object_var_z_name(_sys.mesh().dimension() == 3 ? getParam<std::string>("from_variable") + "_z" : "none")
 {
 }
 
@@ -87,19 +82,15 @@ VectorSolutionIC::initialSetup()
 RealVectorValue
 VectorSolutionIC::value(const Point & p)
 {
-  // return _solution_object.pointValue(0., p, _solution_object_var_name, &_exo_block_ids);
+  /*
+   * NOTE: Using '&_exo_block_ids' will cases errors when using LAGRANGE_VEC variables,
+   *       Excluding '&_exo_block_ids' means that 'pointValue' looks everywhere on the
+   *       mesh for data entries.
+   */
+  //Real x_comp = _solution_object.pointValue(0., p, _solution_object_var_x_name, &_exo_block_ids);
+  //Real y_comp = _solution_object.pointValue(0., p, _solution_object_var_y_name, &_exo_block_ids);
   Real x_comp = _solution_object.pointValue(0., p, _solution_object_var_x_name);
   Real y_comp = _solution_object.pointValue(0., p, _solution_object_var_y_name);
-
-  /*
-  Real y_comp = 0;
-  Real z_comp = 0;
-
-  if (_solution_object_var_y_name != "none")
-    y_comp = _solution_object.pointValue(0., p, _solution_object_var_y_name, &_exo_block_ids);
-  if (_solution_object_var_z_name != "none")
-    z_comp = _solution_object.pointValue(0., p, _solution_object_var_z_name, &_exo_block_ids);
-  */
 
   return RealVectorValue(x_comp, y_comp, 0);
 }
