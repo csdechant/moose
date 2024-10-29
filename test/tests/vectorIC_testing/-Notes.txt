@@ -29,9 +29,10 @@ a difference in boundary conditions, but when changing both cases to uses a natu
 boundary conditions, the input file with a LAGRANGE_VEC variable still failed, while 
 the input file with a NEDELEC_ONE variable had no error message.
 
-Along with the input files, CVS files were generated using Paraview to calculated the difference
-between the values from the previous Exodus file used for ICs and the actual ICs read by 
-the MOOSE object (the colume names are 'u_mag_diff', 'u_x_diff', and 'u_y_diff').
+Along with the input files, CVS files and PNG images were generated using Paraview to 
+calculated the difference between the values from the previous Exodus file used for 
+ICs and the actual ICs read by the MOOSE object (the colume names are 'u_mag_diff', 
+'u_x_diff', and 'u_y_diff').
 
 For LAGRANGE_VEC, the absolute difference was low (< 6e-17) throught the whole mesh.
 
