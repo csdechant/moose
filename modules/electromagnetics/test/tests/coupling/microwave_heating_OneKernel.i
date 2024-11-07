@@ -215,6 +215,9 @@
   [microwave_heating]
     type = ADJouleHeatingSource_OneKernel
     variable = n
+    # E_imag = E_imag
+    # E_real = E_real
+    # conductivity = cond_real
     field = E_real
     complex_field = E_imag
     electrical_conductivity = cond_real
