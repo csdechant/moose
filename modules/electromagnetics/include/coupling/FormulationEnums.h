@@ -12,6 +12,8 @@
 /**
  *  FormulationEnums contains the enumeration used to determine between
  *  standard or harmonic formulations involving electromagnetic electical fields
+ *  and used to determine between solving for an electrostatic or 
+ *  electromagnetic electric field
  */
 namespace FM
 {
@@ -20,5 +22,12 @@ enum FormEnum
 {
   STANDARD,
   HARMONIC
+};
+
+/// Enum used when determining the sover
+enum SolverEnum
+{
+  ELECTROSTATIC,
+  ELECTROMAGNETIC
 };
 } // namespace FM

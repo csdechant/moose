@@ -25,7 +25,7 @@
     variable = T
   [../]
   [./HeatSrc]
-    type = ADJouleHeatingSource_OneKernel
+    type = ADJouleHeatingSource_WithMaterialField
     variable = T
     elec = elec
   [../]

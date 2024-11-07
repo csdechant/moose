@@ -25,9 +25,10 @@
     variable = T
   [../]
   [./HeatSrc]
-    type = ADJouleHeatingSource_OneKernel
+    type = ADJouleHeatingSource_WithMaterialField
     variable = T
-    elec = elec
+    # elec = elec
+    heating_term = 'field_heating'
   [../]
   [./electric]
     type = ADHeatConduction
@@ -58,6 +59,15 @@
 []
 
 [Materials]
+  [./ElectromagneticMaterial]
+    type = ElectromagneticMaterial
+    electric_field_or_potential = elec
+    field_heating_name = field_heating
+    conductivity = electrical_conductivity
+    formulation = 'standard'
+    solver = 'electrostatic'
+  [../]
+
   [./k]
     type = ADGenericConstantMaterial
     prop_names = 'thermal_conductivity'

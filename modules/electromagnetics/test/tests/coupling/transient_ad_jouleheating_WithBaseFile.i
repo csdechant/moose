@@ -27,8 +27,7 @@
   [./HeatSrc]
     type = ADJouleHeatingSource_WithBaseFile
     variable = T
-    # elec = elec
-    field = elec
+    elec = elec
   [../]
   [./electric]
     type = ADHeatConduction

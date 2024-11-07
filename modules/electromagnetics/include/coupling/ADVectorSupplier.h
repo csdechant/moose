@@ -37,7 +37,7 @@ protected:
   virtual ADReal computeQpResidual() override;
 
   /*
-   *  Function the defines the field depending on supplied variable type.
+   *  Function that defines the field depending on supplied variable type.
    *  scaler is the scaling factor to multiplied by the gradient of the variable
    *  if a scalar variable is supplied.
    */

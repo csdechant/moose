@@ -27,7 +27,7 @@ ADJouleHeatingSource_OneKernel::validParams()
       "electrical_conductivity",
       "Material property providing electrical conductivity of the material.");
   params.addParam<Real>("value", 1.0, "Coefficient to multiply by heating term.");
-  MooseEnum formulation("standard harmonic");
+  MooseEnum formulation("standard harmonic", "standard");
   params.addParam<MooseEnum>("formulation", formulation, "The formulation of the Joule heating (standard or harmonic).");
   params.addClassDescription("Calculates the heat source term corresponding to Joule "
                              "heating, with Jacobian contributions calculated using the automatic "
