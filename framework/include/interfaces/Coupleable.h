@@ -635,6 +635,14 @@ protected:
                                                unsigned int comp = 0) const;
 
   /**
+   * Returns gradient of a coupled variable at an element face for
+   * FV Kernel / BC coupling
+   */
+  virtual ADRealVectorValue adCoupledGradientFace(const std::string & var_name,
+                                                  const FaceInfo & fi,
+                                                  const Moose::StateArg & state);
+
+  /**
    * Returns gradient of a coupled variable's time derivative for use in Automatic Differentiation
    * @param var_name Name of coupled variable
    * @param comp Component number for vector of coupled variables

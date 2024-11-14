@@ -127,6 +127,9 @@ public:
 
 protected:
   bool _neighbor_nodal;
+
+  /// Whether the MooseObject is a finite volume object
+  const bool _is_fv;
 };
 
 template <bool is_ad>
