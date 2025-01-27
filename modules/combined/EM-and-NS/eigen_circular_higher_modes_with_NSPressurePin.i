@@ -35,12 +35,29 @@
     type = FileMeshGenerator
     file = circular_axis_V02.msh
   []
+  uniform_refine = 2
 []
 
 [Variables]
   [potential]
     order = FIRST
     family = LAGRANGE
+    eigen = true
+  []
+[]
+
+[ICs]
+  [u_ic]
+    type = FunctionIC
+    variable = 'potential'
+    function = parsed_function
+  []
+[]
+
+[Functions]
+  [parsed_function]
+    type = ParsedFunction
+    expression = 'sin(pi*x)-cos(pi*y/2)'
   []
 []
 
@@ -86,18 +103,17 @@
 []
 
 [BCs]
-  # alternative BCs for circle case
   [circle]
     type = DirichletBC
     variable = potential
     boundary = 'right_side left_side'
     value = 0
   []
-  [eigen_circle]
-    type = EigenDirichletBC
-    variable = potential
-    boundary = 'right_side left_side'
-  []
+  # [eigen_circle]
+  #   type = EigenDirichletBC
+  #   variable = potential
+  #   boundary = 'right_side left_side'
+  # []
 []
 
 [VectorPostprocessors]
@@ -110,29 +126,60 @@
 #   type = Eigenvalue
 # []
 
+[UserObjects]
+  # [pin_potential_low]
+  #   type = NSPressurePin
+  #   variable = potential
+  #   pin_type = point-value
+  #   point = '0 0.5 0'
+  # []
+
+  # NSPressure shifts all the variable solution space by the pin value at the pin local,
+  # and does not enforce the value during a solve.
+  # [pin_potential_high]
+  #   type = NSPressurePin
+  #   variable = potential
+  #   pin_type = point-value
+  #   point = '0 1.5 0'
+  # []
+[]
+
+# [Executioner]
+#   type = Eigenvalue
+#   solve_type = JACOBI_DAVIDSON
+#   # solve_type = KRYLOVSCHUR
+#   which_eigen_pairs = SMALLEST_MAGNITUDE
+#   # precond_matrix_includes_eigen = true
+#   n_eigen_pairs = 3
+#   # n_basis_vectors = 100
+#   petsc_options = '-eps_monitor_all -eps_view'
+#   #petsc_options_iname = '-st_type -eps_target -st_pc_type -eps_mpd -eps_ncv'
+#   #petsc_options_value = 'precond 1e-10 lu 12 900'
+#
+#   petsc_options_iname = '-st_type -st_pc_type'
+#   petsc_options_value = 'precond lu'
+#
+#   # eigen_tol = 1e-5
+# []
 [Executioner]
   type = Eigenvalue
+  which_eigen_pairs = SLEPC_DEFAULT
+  n_eigen_pairs = 5
   solve_type = KRYLOVSCHUR
-  # solve_type = ARNOLDI
-  which_eigen_pairs = SMALLEST_MAGNITUDE
-  # precond_matrix_includes_eigen = true
-  n_eigen_pairs = 6
-  petsc_options = '-eps_monitor_all -eps_view'
-  # st_pc_type drastically changes answers
-  # -st_type cayley skips some eigenvalues (including dup.), Why?
   petsc_options_iname = '-st_type -eps_target -st_ksp_type -st_pc_type'
   petsc_options_value = 'sinvert 0 preonly lu'
-  eigen_tol = 1e-8
+  petsc_options = '-eps_view -eps_monitor_all'
+  eigen_tol = 1e-15
 []
 
 [Problem]
   type = EigenProblem
-  active_eigen_index = 0
+  active_eigen_index = 01
 []
 
 [Outputs]
-  file_base = circle_index_test_mesh_0
+  file_base = circle_index_test_mesh_01
   csv = true
   exodus = true
-  execute_on = FINAL
+  # execute_on = FINAL
 []

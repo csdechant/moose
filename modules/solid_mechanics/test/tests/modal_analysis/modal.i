@@ -132,7 +132,6 @@ index = 0
     type = Eigenvalues
     execute_on = TIMESTEP_END
   []
-
 []
 
 [Problem]
