@@ -20,12 +20,12 @@ VectorSolutionIC::validParams()
   InputParameters params = VectorInitialCondition::validParams();
   params.addRequiredParam<UserObjectName>("solution_uo",
                                           "The SolutionUserObject to extract data from.");
+  params.addRequiredParam<VariableName>(
+      "from_variable", "The name of the variable in the file that is to be extracted");
   //params.addRequiredParam<VariableName>(
-  //    "from_variable", "The name of the variable in the file that is to be extracted");
-  params.addRequiredParam<VariableName>(
-      "from_variable_x", "The name of the variable in the file that is to be extracted");
-  params.addRequiredParam<VariableName>(
-      "from_variable_y", "The name of the variable in the file that is to be extracted");
+  //    "from_variable_x", "The name of the variable in the file that is to be extracted");
+  //params.addRequiredParam<VariableName>(
+  //    "from_variable_y", "The name of the variable in the file that is to be extracted");
   params.addClassDescription(
       "Sets the initial condition from a field variable stored in an Exodus file, "
       "retrieved by a SolutionUserObject");
@@ -35,9 +35,9 @@ VectorSolutionIC::validParams()
 VectorSolutionIC::VectorSolutionIC(const InputParameters & parameters)
   : VectorInitialCondition(parameters),
     _solution_object(getUserObject<SolutionUserObject>("solution_uo")),
-    //_solution_object_var_name(getParam<VariableName>("from_variable"))
-    _solution_object_var_x_name(getParam<VariableName>("from_variable_x")),
-    _solution_object_var_y_name(getParam<VariableName>("from_variable_y"))
+    _solution_object_var_name(getParam<VariableName>("from_variable"))
+    //_solution_object_var_x_name(getParam<VariableName>("from_variable_x")),
+    //_solution_object_var_y_name(getParam<VariableName>("from_variable_y"))
 {
 }
 
@@ -89,8 +89,15 @@ VectorSolutionIC::value(const Point & p)
    */
   //Real x_comp = _solution_object.pointValue(0., p, _solution_object_var_x_name, &_exo_block_ids);
   //Real y_comp = _solution_object.pointValue(0., p, _solution_object_var_y_name, &_exo_block_ids);
+  /*
   Real x_comp = _solution_object.pointValue(0., p, _solution_object_var_x_name);
   Real y_comp = _solution_object.pointValue(0., p, _solution_object_var_y_name);
 
   return RealVectorValue(x_comp, y_comp, 0);
+  */
+  /////////////////////////////////////////////////////////
+
+  RealVectorValue u = _solution_object.pointValue(0., p, _solution_object_var_name, &_exo_block_ids);
+
+  return u;
 }

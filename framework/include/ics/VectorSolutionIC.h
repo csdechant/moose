@@ -30,9 +30,9 @@ protected:
   const SolutionUserObject & _solution_object;
 
   /// The variable name extracted from the SolutionUserObject
-  //const VariableName & _solution_object_var_name;
-  const VariableName & _solution_object_var_x_name;
-  const VariableName & _solution_object_var_y_name;
+  const VariableName & _solution_object_var_name;
+  //const VariableName & _solution_object_var_x_name;
+  //const VariableName & _solution_object_var_y_name;
   //std::string _solution_object_var_x_name;
   //std::string _solution_object_var_y_name;
   //std::string _solution_object_var_z_name;
