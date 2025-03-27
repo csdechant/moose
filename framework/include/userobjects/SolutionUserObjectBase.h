@@ -233,6 +233,22 @@ public:
   Real directValue(const Elem * elem, const std::string & var_name) const;
 
   /**
+   * Return a vector value directly from a Node
+   * @param node A pointer to the node at which a value is desired
+   * @param var_name The variable from which to extract a value
+   * @return The desired value for the given node and variable name
+   */
+  RealVectorValue directVectorValue(const Node * node, const std::string & var_name) const;
+
+  /**
+   * Return a vector value from the centroid of an element
+   * @param elem A pointer to the element at which a value is desired
+   * @param var_name The variable from which to extract a value
+   * @return The desired value for the given element and variable name
+   */
+  RealVectorValue directVectorValue(const Elem * elem, const std::string & var_name) const;
+
+  /**
    * Returns a value of a global variable
    * @param t The time at which to extract (not used, it is handled automatically when reading the
    * data)

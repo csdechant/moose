@@ -435,6 +435,80 @@ SolutionUserObjectBase::directValue(const Elem * elem, const std::string & var_n
   return directValue(dof_id);
 }
 
+RealVectorValue
+SolutionUserObjectBase::directVectorValue(const Node * node, const std::string & var_name) const
+{
+  // Get the libmesh variable and system numbers
+  unsigned int var_num = _system->variable_number(var_name);
+  unsigned int sys_num = _system->number();
+
+  // Get the node id and associated dof
+  dof_id_type node_id = node->id();
+  const Node & sys_node = _system->get_mesh().node_ref(node_id);
+  mooseAssert(sys_node.n_dofs(sys_num, var_num) > 0,
+              "Variable " << var_name << " has no DoFs on node " << sys_node.id());
+
+  const unsigned int dim = _system->get_mesh().mesh_dimension();
+
+  Real x_comp = 0.;
+  Real y_comp = 0.;
+  Real z_comp = 0.;
+
+  dof_id_type dof_id_x = sys_node.dof_number(sys_num, var_num, 0);
+  x_comp = directValue(dof_id_x);
+
+  if (dim > 1)
+  {
+    dof_id_type dof_id_y = sys_node.dof_number(sys_num, var_num, 1);
+    y_comp = directValue(dof_id_y);
+  }
+  if (dim > 2)
+  {
+    dof_id_type dof_id_z = sys_node.dof_number(sys_num, var_num, 2);
+    z_comp = directValue(dof_id_z);
+  }
+
+  // Return the desired value for the dof
+  return RealVectorValue(x_comp, y_comp, z_comp);
+}
+
+RealVectorValue
+SolutionUserObjectBase::directVectorValue(const Elem * elem, const std::string & var_name) const
+{
+  // Get the libmesh variable and system numbers
+  unsigned int var_num = _system->variable_number(var_name);
+  unsigned int sys_num = _system->number();
+
+  // Get the element id and associated dof
+  dof_id_type elem_id = elem->id();
+  const Elem & sys_elem = _system->get_mesh().elem_ref(elem_id);
+  mooseAssert(sys_elem.n_dofs(sys_num, var_num) > 0,
+              "Variable " << var_name << " has no DoFs on element " << sys_elem.id());
+
+  const unsigned int dim = _system->get_mesh().mesh_dimension();
+
+  Real x_comp = 0.;
+  Real y_comp = 0.;
+  Real z_comp = 0.;
+
+  dof_id_type dof_id_x = sys_elem.dof_number(sys_num, var_num, 0);
+  x_comp = directValue(dof_id_x);
+
+  if (dim > 1)
+  {
+    dof_id_type dof_id_y = sys_elem.dof_number(sys_num, var_num, 1);
+    y_comp = directValue(dof_id_y);
+  }
+  if (dim > 2)
+  {
+    dof_id_type dof_id_z = sys_elem.dof_number(sys_num, var_num, 2);
+    z_comp = directValue(dof_id_z);
+  }
+
+  // Return the desired value
+  return RealVectorValue(x_comp, y_comp, z_comp);
+}
+
 void
 SolutionUserObjectBase::initialize()
 {
