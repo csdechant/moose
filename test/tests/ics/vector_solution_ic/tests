@@ -1,0 +1,51 @@
+[Tests]
+  issues = ''
+  design = ''
+  [lagrange_vec_xda]
+    type = 'Exodiff'
+    input = 'lagrange_vec_solution_ic.i'
+    exodiff = 'lagrange_vec_solution_ic_out.e'
+    requirement = ""
+  []
+  [nedelec_one_xda]
+    type = 'Exodiff'
+    input = 'nedelec_one_solution_ic.i'
+    exodiff = 'nedelec_one_solution_ic_out.e'
+    requirement = ""
+  []
+  [raviart_thomas_xda]
+    type = 'Exodiff'
+    input = 'raviart_thomas_solution_ic.i'
+    exodiff = 'raviart_thomas_solution_ic_out.e'
+    requirement = ""
+  []
+
+  [lagrange_vec_exodus]
+    type = 'Exodiff'
+    input = 'lagrange_vec_solution_ic.i'
+    exodiff = 'lagrange_vec_solution_ic_out.e'
+    cli_args = "Mesh/geo/file='gold/lagrange_vec_solution_ic_out.e' UserObjects/soln/mesh='gold/lagrange_vec_solution_ic_out.e' UserObjects/soln/es='' UserObjects/soln/system_variables='u_x u_y'"
+    allow_warnings = true
+    requirement = ""
+  []
+  [nedelec_one_exodus]
+    type = 'Exodiff'
+    input = 'nedelec_one_solution_ic.i'
+    exodiff = 'nedelec_one_solution_ic_out.e'
+    cli_args = "Mesh/geo/file='gold/nedelec_one_solution_ic_out.e' UserObjects/soln/mesh='gold/nedelec_one_solution_ic_out.e' UserObjects/soln/es='' UserObjects/soln/system_variables='u_x u_y'"
+    allow_warnings = true
+    abs_zero = 1e-8
+    rel_err = 5e-1
+    requirement = ""
+  []
+  [raviart_thomas_exodus]
+    type = 'Exodiff'
+    input = 'raviart_thomas_solution_ic.i'
+    exodiff = 'raviart_thomas_solution_ic_out.e'
+    cli_args = "Mesh/geo/file='gold/raviart_thomas_solution_ic_out.e' UserObjects/soln/mesh='gold/raviart_thomas_solution_ic_out.e' UserObjects/soln/es='' UserObjects/soln/system_variables='u_x u_y'"
+    allow_warnings = true
+    abs_zero = 1e-8
+    rel_err = 5e-1
+    requirement = ""
+  []
+[]

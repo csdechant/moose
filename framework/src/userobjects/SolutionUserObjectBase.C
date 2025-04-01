@@ -862,6 +862,58 @@ SolutionUserObjectBase::pointValue(Real libmesh_dbg_var(t),
   return val;
 }
 
+RealVectorValue
+SolutionUserObjectBase::pointVectorValue(Real t,
+                                   const Point & p,
+                                   const std::string & var_name,
+                                   const std::set<subdomain_id_type> * subdomain_ids) const
+{
+  const unsigned int local_var_index = getLocalVarIndex(var_name);
+  return pointVectorValue(t, p, local_var_index, subdomain_ids);
+}
+
+RealVectorValue
+SolutionUserObjectBase::pointVectorValue(Real libmesh_dbg_var(t),
+                                   const Point & p,
+                                   const unsigned int local_var_index,
+                                   const std::set<subdomain_id_type> * subdomain_ids) const
+{
+  // Create copy of point
+  Point pt(p);
+
+  // do the transformations
+  for (unsigned int trans_num = 0; trans_num < _transformation_order.size(); ++trans_num)
+  {
+    if (_transformation_order[trans_num] == "rotation0")
+      pt = _r0 * pt;
+    else if (_transformation_order[trans_num] == "translation")
+      for (const auto i : make_range(Moose::dim))
+        pt(i) -= _translation[i];
+    else if (_transformation_order[trans_num] == "scale")
+      for (const auto i : make_range(Moose::dim))
+        pt(i) /= _scale[i];
+    else if (_transformation_order[trans_num] == "scale_multiplier")
+      for (const auto i : make_range(Moose::dim))
+        pt(i) *= _scale_multiplier[i];
+    else if (_transformation_order[trans_num] == "rotation1")
+      pt = _r1 * pt;
+  }
+
+  // Extract the value at the current point
+  RealVectorValue val = evalVectorMeshFunction(pt, local_var_index, 1, subdomain_ids);
+
+  // Interpolate
+  if (_file_type == 1 && _interpolate_times)
+  {
+    mooseAssert(t == _interpolation_time,
+                "Time passed into value() must match time at last call to timestepSetup()");
+    RealVectorValue val2 = evalVectorMeshFunction(pt, local_var_index, 2, subdomain_ids);
+    val = val + (val2 - val) * _interpolation_factor;
+  }
+
+  return val;
+}
+
 std::map<const Elem *, Real>
 SolutionUserObjectBase::discontinuousPointValue(
     Real t,
@@ -1119,6 +1171,46 @@ SolutionUserObjectBase::evalMeshFunction(const Point & p,
 {
   // Storage for mesh function output
   DenseVector<Number> output;
+
+  // Extract a value from the _mesh_function
+  {
+    Threads::spin_mutex::scoped_lock lock(_solution_user_object_mutex);
+    if (func_num == 1)
+      (*_mesh_function)(p, 0.0, output, subdomain_ids);
+
+    // Extract a value from _mesh_function2
+    else if (func_num == 2)
+      (*_mesh_function2)(p, 0.0, output, subdomain_ids);
+
+    else
+      mooseError("The func_num must be 1 or 2");
+  }
+
+  // Error if the data is out-of-range, which will be the case if the mesh functions are evaluated
+  // outside the domain
+  if (output.size() == 0)
+  {
+    std::ostringstream oss;
+    p.print(oss);
+    mooseError("Failed to access the data for variable '",
+               _system_variables[local_var_index],
+               "' at point ",
+               oss.str(),
+               " in the '",
+               name(),
+               "' SolutionUserObjectBase");
+  }
+  return output(local_var_index);
+}
+
+RealVectorValue
+SolutionUserObjectBase::evalVectorMeshFunction(const Point & p,
+                                               const unsigned int local_var_index,
+                                               unsigned int func_num,
+                                               const std::set<subdomain_id_type> * subdomain_ids) const
+{
+  // Storage for mesh function output
+  DenseVector<Gradient> output;
 
   // Extract a value from the _mesh_function
   {

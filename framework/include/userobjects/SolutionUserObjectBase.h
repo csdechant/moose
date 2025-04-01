@@ -97,6 +97,36 @@ public:
                   const std::set<subdomain_id_type> * subdomain_ids = nullptr) const;
 
   /**
+   * Returns a vector value at a specific location and variable (see SolutionFunction)
+   * @param t The time at which to extract (not used, it is handled automatically when reading the
+   * data)
+   * @param p The location at which to return a value
+   * @param local_var_index The local index of the variable to be evaluated
+   * @param subdomain_ids Subdomains IDs where to look for the value, if nullptr look everywhere
+   * @return The desired value for the given variable at a location
+   */
+  RealVectorValue
+  pointVectorValue(Real t,
+                   const Point & p,
+                   const unsigned int local_var_index,
+                   const std::set<subdomain_id_type> * subdomain_ids = nullptr) const;
+
+  /**
+   * Returns a vector value at a specific location and variable (see SolutionFunction)
+   * @param t The time at which to extract (not used, it is handled automatically when reading the
+   * data)
+   * @param p The location at which to return a value
+   * @param var_name The variable to be evaluated
+   * @param subdomain_ids Subdomains IDs where to look for the value, if nullptr look everywhere
+   * @return The desired value for the given variable at a location
+   */
+  RealVectorValue
+  pointVectorValue(Real t,
+                   const Point & p,
+                   const std::string & var_name,
+                   const std::set<subdomain_id_type> * subdomain_ids = nullptr) const;
+
+  /**
    * Returns a value at a specific location and variable for cases where the solution is
    * multivalued at element faces
    * Use pointValue for continuous shape functions or if you are sure your point is within an
@@ -360,6 +390,19 @@ protected:
                         const unsigned int local_var_index,
                         unsigned int func_num,
                         const std::set<subdomain_id_type> * subdomain_ids = nullptr) const;
+
+  /**
+   * A wrapper method for calling the vector field MeshFunctions used for reading the data
+   * @param p The location at which data is desired
+   * @param local_var_index The local index of the variable to extract data from
+   * @param subdomain_ids Subdomains IDs where to look for the value, if nullptr look everywhere
+   * @param func_num The MeshFunction index to use (1 = _mesh_function; 2 = _mesh_function2)
+   */
+  RealVectorValue
+  evalVectorMeshFunction(const Point & p,
+                         const unsigned int local_var_index,
+                         unsigned int func_num,
+                         const std::set<subdomain_id_type> * subdomain_ids = nullptr) const;
 
   /**
    * A wrapper method for calling the various MeshFunctions that calls the mesh function
