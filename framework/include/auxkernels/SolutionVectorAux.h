@@ -40,6 +40,18 @@ protected:
    */
   virtual RealVectorValue computeValue() override;
 
+  /**
+   * Populates a RealVectorValue with the solutions from in XDA output file
+   * @param output The RealVectorValue to populate
+   */
+  virtual void computeValueFromXda(RealVectorValue & output);
+
+  /**
+   * Populates a RealVectorValue with the solutions from in Exodus output file
+   * @param output The RealVectorValue to populate
+   */
+  virtual void computeValueFromExodus(RealVectorValue & output);
+
   /// Reference to the SolutionUserObject storing the solution
   const SolutionUserObjectBase & _solution_object;
 

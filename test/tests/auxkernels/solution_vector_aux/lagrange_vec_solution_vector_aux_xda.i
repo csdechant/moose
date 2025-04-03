@@ -1,7 +1,7 @@
 [Mesh]
   [geo]
     type = FileMeshGenerator
-    file = 'transient_vector_diffusion_out_at_10steps_0000_mesh.xda'
+    file = 'gold/lagrange_vec_solution_vector_aux_0000_mesh.xda'
   []
 []
 
@@ -46,7 +46,6 @@
     variable = aux_xda_u
     solution = soln
     from_variable = u
-    direct = true
     execute_on = 'INITIAL'
   []
 []
@@ -54,8 +53,8 @@
 [UserObjects]
   [soln]
     type = SolutionUserObject
-    mesh = 'transient_vector_diffusion_out_at_10steps_0000_mesh.xda'
-    es = 'transient_vector_diffusion_out_at_10steps_0000.xda'
+    mesh = 'gold/lagrange_vec_solution_vector_aux_0000_mesh.xda'
+    es = 'gold/lagrange_vec_solution_vector_aux_0000.xda'
     system_variables = 'u'
     timestep = 'LATEST'
   []

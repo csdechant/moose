@@ -45,11 +45,30 @@ SolutionVectorAux::SolutionVectorAux(const InputParameters & parameters)
     _scale_factor(getParam<Real>("scale_factor")),
     _add_factor(getParam<RealVectorValue>("add_factor"))
 {
+  const auto type = _var.feType();
+  if (_direct &&
+      ((type.family == libMesh::NEDELEC_ONE) || (type.family == libMesh::RAVIART_THOMAS)))
+    paramError("direct",
+               "Variable family " + Moose::stringify(type.family) +
+                   " is not supported for direct copying. This is because while " +
+                   Moose::stringify(type.family) +
+                   " is labeled as a element vaiable, the dofs are actually stored at the center "
+                   "edge nodes of the 2nd order mesh and not the element itself.");
 }
 
 void
 SolutionVectorAux::initialSetup()
 {
+  if (_solution_object.getSolutionFileType() == "exodusII")
+  {
+    // NOTE: Maybe this should just be an error, since combining Lagrange scalar field components
+    //       for any vector field data set is the incorrect way to go...
+    mooseWarning(
+        "You are reading from an Exodus file for vector field data! This is ill-advised because "
+        "Exodus files supply vector field data as a set of Lagrange scalar field components, "
+        "regardless of the family type of the vector field. Please use XDA output data instead.");
+  }
+
   // If 'from_variable' is supplied, use the value
   if (isParamValid("from_variable"))
     _var_name = getParam<std::string>("from_variable");
@@ -76,11 +95,33 @@ SolutionVectorAux::computeValue()
   // The value to output
   RealVectorValue output;
 
+  // If provided an Exodus file, construct the vector field variable based on the
+  // Lagrange scalar field components provided by the Exodus file
+  if (_solution_object.getSolutionFileType() == "exodusII")
+  {
+    computeValueFromExodus(output);
+  }
+
+  // If provided an XDA file, construct the vector field variable based on the
+  // exact vector field solution provided by the XDA fiel
+  else
+  {
+    computeValueFromXda(output);
+  }
+
+  // Apply factors and return the value
+  return _scale_factor * output + _add_factor;
+}
+void
+SolutionVectorAux::computeValueFromXda(RealVectorValue & output)
+{
   // _direct=true, extract the values using the dof
   if (_direct)
   {
     if (isNodal())
+    {
       output = _solution_object.directVectorValue(_current_node, _var_name);
+    }
 
     else
       output = _solution_object.directVectorValue(_current_elem, _var_name);
@@ -89,17 +130,58 @@ SolutionVectorAux::computeValue()
   // _direct=false, extract the values using time and point
   else
   {
-    /*
     if (isNodal())
-      output = _solution_object.pointValue(_t, *_current_node, _var_name);
+      output = _solution_object.pointVectorValue(_t, *_current_node, _var_name);
 
     else
-      output = _solution_object.pointValue(_t, _current_elem->vertex_average(), _var_name);
-    */
-    mooseError("Currently  'pointValue' in SolutionUserObject is broken for vector field variable "
-               "due to libMesh's MeshFuction operator. This should be fixed soon.");
+      output = _solution_object.pointVectorValue(_t, _q_point[_qp], _var_name);
+  }
+}
+
+void
+SolutionVectorAux::computeValueFromExodus(RealVectorValue & output)
+{
+  // _direct=true, extract the values using the dof
+  if (_direct)
+  {
+    if (isNodal())
+    {
+      output(0) = _solution_object.directValue(_current_node, _var_name + "_x");
+      if (_mesh.dimension() > 1)
+        output(1) = _solution_object.directValue(_current_node, _var_name + "_y");
+      if (_mesh.dimension() > 2)
+        output(2) = _solution_object.directValue(_current_node, _var_name + "_z");
+    }
+
+    else
+    {
+      output(0) = _solution_object.directValue(_current_elem, _var_name + "_x");
+      if (_mesh.dimension() > 1)
+        output(1) = _solution_object.directValue(_current_elem, _var_name + "_y");
+      if (_mesh.dimension() > 2)
+        output(2) = _solution_object.directValue(_current_elem, _var_name + "_z");
+    }
   }
 
-  // Apply factors and return the value
-  return _scale_factor * output + _add_factor;
+  // _direct=false, extract the values using time and point
+  else
+  {
+    if (isNodal())
+    {
+      output(0) = _solution_object.pointValue(_t, *_current_node, _var_name + "_x");
+      if (_mesh.dimension() > 1)
+        output(1) = _solution_object.pointValue(_t, *_current_node, _var_name + "_y");
+      if (_mesh.dimension() > 2)
+        output(2) = _solution_object.pointValue(_t, *_current_node, _var_name + "_z");
+    }
+
+    else
+    {
+      output(0) = _solution_object.pointValue(_t, _q_point[_qp], _var_name + "_x");
+      if (_mesh.dimension() > 1)
+        output(1) = _solution_object.pointValue(_t, _q_point[_qp], _var_name + "_y");
+      if (_mesh.dimension() > 2)
+        output(2) = _solution_object.pointValue(_t, _q_point[_qp], _var_name + "_z");
+    }
+  }
 }

@@ -1,0 +1,82 @@
+[Tests]
+  issues = ''
+  design = ''
+  [lagrange_vec_xda_direct]
+    type = 'Exodiff'
+    input = 'lagrange_vec_solution_vector_aux_xda.i'
+    exodiff = 'lagrange_vec_solution_vector_aux_xda_direct_out.e'
+    cli_args = "AuxKernels/aux_xda_u_kernel/direct=true Outputs/file_base='lagrange_vec_solution_vector_aux_xda_direct_out'"
+    requirement = ""
+  []
+  [nedelec_one_xda_direct]
+    type = RunException
+    input = 'nedelec_one_solution_vector_aux_xda.i'
+    cli_args = "AuxKernels/aux_xda_u_kernel/direct=true"
+    expect_err = "Variable family NEDELEC_ONE is not supported for direct copying. This is because while NEDELEC_ONE is labeled as a element vaiable, the dofs are actually stored at the center edge nodes of the 2nd order mesh and not the element itself."
+    requirement = ""
+  []
+  [raviart_thomas_xda_direct]
+    type = RunException
+    input = 'raviart_thomas_solution_vector_aux_xda.i'
+    cli_args = "AuxKernels/aux_xda_u_kernel/direct=true"
+    expect_err = "Variable family RAVIART_THOMAS is not supported for direct copying. This is because while RAVIART_THOMAS is labeled as a element vaiable, the dofs are actually stored at the center edge nodes of the 2nd order mesh and not the element itself."
+    requirement = ""
+  []
+
+  [lagrange_vec_xda]
+    type = 'Exodiff'
+    input = 'lagrange_vec_solution_vector_aux_xda.i'
+    exodiff = 'lagrange_vec_solution_vector_aux_xda_out.e'
+    requirement = ""
+  []
+  [nedelec_one_xda]
+    type = 'Exodiff'
+    input = 'nedelec_one_solution_vector_aux_xda.i'
+    exodiff = 'nedelec_one_solution_vector_aux_xda_out.e'
+    requirement = ""
+  []
+  [raviart_thomas_xda]
+    type = 'Exodiff'
+    input = 'raviart_thomas_solution_vector_aux_xda.i'
+    exodiff = 'raviart_thomas_solution_vector_aux_xda_out.e'
+    requirement = ""
+  []
+
+  [lagrange_vec_exodus_direct]
+    type = 'Exodiff'
+    input = 'lagrange_vec_solution_vector_aux_xda.i'
+    exodiff = 'lagrange_vec_solution_vector_aux_xda_direct_out.e'
+    cli_args = "AuxKernels/aux_xda_u_kernel/direct=true Outputs/file_base='lagrange_vec_solution_vector_aux_xda_direct_out' Mesh/geo/file='gold/lagrange_vec_solution_vector_aux_xda_out.e' UserObjects/soln/mesh='gold/lagrange_vec_solution_vector_aux_xda_out.e' UserObjects/soln/es='' UserObjects/soln/system_variables='u_x u_y'"
+    allow_warnings = true
+    requirement = ""
+  []
+
+  [lagrange_vec_exodus]
+    type = 'Exodiff'
+    input = 'lagrange_vec_solution_vector_aux_xda.i'
+    exodiff = 'lagrange_vec_solution_vector_aux_xda_out.e'
+    cli_args = "Mesh/geo/file='gold/lagrange_vec_solution_vector_aux_xda_out.e' UserObjects/soln/mesh='gold/lagrange_vec_solution_vector_aux_xda_out.e' UserObjects/soln/es='' UserObjects/soln/system_variables='u_x u_y'"
+    allow_warnings = true
+    requirement = ""
+  []
+  [nedelec_one_exodus]
+    type = 'Exodiff'
+    input = 'nedelec_one_solution_vector_aux_xda.i'
+    exodiff = 'nedelec_one_solution_vector_aux_xda_out.e'
+    cli_args = "Mesh/geo/file='gold/nedelec_one_solution_vector_aux_xda_out.e' UserObjects/soln/mesh='gold/nedelec_one_solution_vector_aux_xda_out.e' UserObjects/soln/es='' UserObjects/soln/system_variables='u_x u_y'"
+    allow_warnings = true
+    abs_zero = 1e-8
+    rel_err = 5e-1
+    requirement = ""
+  []
+  [raviart_thomas_exodus]
+    type = 'Exodiff'
+    input = 'raviart_thomas_solution_vector_aux_xda.i'
+    exodiff = 'raviart_thomas_solution_vector_aux_xda_out.e'
+    cli_args = "Mesh/geo/file='gold/raviart_thomas_solution_vector_aux_xda_out.e' UserObjects/soln/mesh='gold/raviart_thomas_solution_vector_aux_xda_out.e' UserObjects/soln/es='' UserObjects/soln/system_variables='u_x u_y'"
+    allow_warnings = true
+    abs_zero = 1e-8
+    rel_err = 5e-1
+    requirement = ""
+  []
+[]
